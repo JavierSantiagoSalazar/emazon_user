@@ -5,8 +5,10 @@ import com.pragma.emazon_user.domain.exception.user.UserInvalidDocumentFormatExc
 import com.pragma.emazon_user.domain.exception.user.UserInvalidEmailFormatException;
 import com.pragma.emazon_user.domain.exception.user.UserInvalidPhoneFormatException;
 import com.pragma.emazon_user.domain.exception.user.UserUnderageException;
+import com.pragma.emazon_user.domain.model.Permission;
 import com.pragma.emazon_user.domain.model.Role;
 import com.pragma.emazon_user.domain.model.User;
+import com.pragma.emazon_user.domain.spi.PasswordEncoderPort;
 import com.pragma.emazon_user.domain.spi.RolePersistencePort;
 import com.pragma.emazon_user.domain.spi.UserPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +18,9 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -32,6 +35,9 @@ class UserUseCaseTest {
 
     @Mock
     private RolePersistencePort rolePersistencePort;
+
+    @Mock
+    private PasswordEncoderPort passwordEncoderPort;
 
     @InjectMocks
     private UserUseCase userUseCase;
@@ -50,7 +56,11 @@ class UserUseCaseTest {
                 LocalDate.of(1990, 1, 1),
                 "javier.perez@example.com",
                 "password123",
-                new Role(1, "aux_bodega", "roleDescription")
+                new Role(1,
+                        "aux_bodega",
+                        "roleDescription",
+                        Set.of(new Permission(1, "READ"))
+                )
         );
     }
 

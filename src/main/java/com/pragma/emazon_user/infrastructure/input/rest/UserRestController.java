@@ -1,7 +1,7 @@
 package com.pragma.emazon_user.infrastructure.input.rest;
 
 import com.pragma.emazon_user.application.dto.UserRequest;
-import com.pragma.emazon_user.application.handler.UserHandler;
+import com.pragma.emazon_user.application.handler.user.UserHandler;
 import com.pragma.emazon_user.domain.utils.Constants;
 import com.pragma.emazon_user.domain.utils.HttpStatusCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -162,7 +162,7 @@ public class UserRestController {
                     content = @Content
             )
     })
-    @PostMapping("/warehouseAssistant")
+    @PostMapping("/warehouse-assistant")
     public ResponseEntity<Void> createWarehouseAssistant(@Valid @RequestBody UserRequest userRequest) {
 
         userHandler.createWarehouseAssistant(userRequest);

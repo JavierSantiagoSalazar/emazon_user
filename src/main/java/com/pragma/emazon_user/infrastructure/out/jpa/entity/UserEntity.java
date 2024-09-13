@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
@@ -20,7 +22,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +53,7 @@ public class UserEntity {
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity userRole;
 

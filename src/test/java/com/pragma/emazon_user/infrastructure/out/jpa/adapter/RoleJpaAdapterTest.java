@@ -1,8 +1,11 @@
 package com.pragma.emazon_user.infrastructure.out.jpa.adapter;
 
 import com.pragma.emazon_user.domain.exception.role.RoleDoesNotExistException;
+import com.pragma.emazon_user.domain.model.Permission;
 import com.pragma.emazon_user.domain.model.Role;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.PermissionEntity;
 import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEntity;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import com.pragma.emazon_user.infrastructure.out.jpa.mapper.RoleEntityMapper;
 import com.pragma.emazon_user.infrastructure.out.jpa.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -38,8 +43,17 @@ class RoleJpaAdapterTest {
     @BeforeEach
     public void setUp() {
 
-        defaultRole = new Role(1, "aux_bodega", "description");
-        defaultRoleEntity = new RoleEntity(1, "aux_bodega", "description", List.of());
+        defaultRole = new Role(1,
+                "aux_bodega",
+                "description",
+                Set.of(new Permission(1, "READ"))
+        );
+        defaultRoleEntity = new RoleEntity(1,
+                RoleEnum.WAREHOUSE_ASSISTANT,
+                "description",
+                List.of(),
+                Set.of(new PermissionEntity(1, "READ"))
+        );
     }
     
     @Test

@@ -6,17 +6,37 @@ public class Constants {
         throw new IllegalStateException("Utility class");
     }
 
+    public static final String COMMA_DELIMITER = ",";
+    public static final String CLAIM_AUTHORITIES = "authorities";
+    public static final String INVALID_TOKEN = "Token invalid";
+    public static final String UNAUTHORIZED_ACCESS = "Unauthorized access: ";
+    public static final String SPRING_COMPONENT_MODEL = "spring";
+
+    public static final String LOGIN_SUCCESSFULLY = "User logged successfully";
+    public static final String BAD_CREDENTIALS = "Invalid username or password";
+    public static final String GRANTED_AUTHORITY_ROLE = "ROLE_";
+
+    public static final String INCORRECT_PASSWORD = "ROLE_";
+
+    public static final String LOGIN_URL = "/auth/log-in";
+    public static final String WAREHOUSE_ASSISTANT_URL = "/user/warehouse-assistant";
+
     /* --- EXCEPTIONS CONSTANTS: USER --- */
 
-    public static final String USER_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Usuario ya registrado con: ";
-    public static final String USER_INVALID_EMAIL_FORMAT_EXCEPTION_MESSAGE = "Formato de email inválido: ";
-    public static final String USER_INVALID_PHONE_FORMAT_EXCEPTION_MESSAGE = "El teléfono debe contener solo números y puede comenzar con el símbolo: + , El teléfono ingresado: ";
-    public static final String USER_INVALID_DOCUMENT_FORMAT_EXCEPTION_MESSAGE = "Formato de documento inválido: ";
-    public static final String USER_UNDERAGE_EXCEPTION_MESSAGE = "El usuario no puede ser menor de edad. Fecha de nacimiento: ";
+    public static final String USER_ALREADY_EXISTS_EXCEPTION_MESSAGE = "User already registered with: ";
+    public static final String USER_INVALID_EMAIL_FORMAT_EXCEPTION_MESSAGE = "Invalid email format: ";
+    public static final String USER_INVALID_PHONE_FORMAT_EXCEPTION_MESSAGE = "Phone number must contain only numbers and may start with the symbol: +. The entered phone number: ";
+    public static final String USER_INVALID_DOCUMENT_FORMAT_EXCEPTION_MESSAGE = "Invalid document format: ";
+    public static final String USER_UNDERAGE_EXCEPTION_MESSAGE = "User cannot be underage. Date of birth: ";
+    public static final String USER_DOES_NOT_EXIST = "User does not exist: ";
+    public static final String USER_INVALID_EMAIL_FORMAT_EXCEPTION = "Invalid email format.";
+    public static final String USER_INVALID_PHONE_FORMAT_EXCEPTION = "Phone number must contain only numbers and may start with the symbol: +. The entered phone number.";
+    public static final String USER_INVALID_DOCUMENT_FORMAT_EXCEPTION = "Invalid document format.";
+    public static final String USER_UNDERAGE_EXCEPTION = "User cannot be underage.";
 
     /* --- EXCEPTIONS CONSTANTS: ROLE --- */
 
-    public static final String ROLE_DOES_NOT_EXIST = "El rol no existe con ID: ";
+    public static final String ROLE_DOES_NOT_EXIST = "Rol does not exist with ID: ";
 
     /* --- OPENAPI CONSTANTS --- */
 
@@ -26,8 +46,12 @@ public class Constants {
     public static final String OPEN_API_LICENCE_URL = "http://springdoc.org";
     public static final String OPEN_API_APP_DESCRIPTION = "${appDescription}";
     public static final String OPEN_API_APP_VERSION = "${appVersion}";
+    public static final String OPEN_API_SWAGGER_UI_HTML = "/swagger-ui/**";
+    public static final String OPEN_API_SWAGGER_UI = "/swagger-ui/";
+    public static final String OPEN_API_V3_API_DOCS = "/v3/api-docs/**";
 
     public static final String WAREHOUSE_ASSISTANT_SUMMARY = "Add new warehouse assistant";
+    public static final String LOGIN_SUMMARY = "Allows a user to authenticate in the system";
 
     public static final String WAREHOUSE_ASSISTANT_CREATED = "Warehouse assistant created";
 
@@ -66,7 +90,7 @@ public class Constants {
 
     /* --- REGEX CONSTANTS --- */
 
-    public static final String USER_EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+    public static final String USER_EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     public static final String USER_PHONE_REGEX = "^\\+?\\d{1,13}$";
     public static final String USER_DOCUMENT_REGEX = "\\d+";
     public static final Integer USER_MAX_AGE = 18;
