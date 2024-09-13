@@ -1,8 +1,10 @@
 package com.pragma.emazon_user.application.handler;
 
 import com.pragma.emazon_user.application.dto.UserRequest;
+import com.pragma.emazon_user.application.handler.user.UserHandlerImpl;
 import com.pragma.emazon_user.application.mappers.UserRequestMapper;
 import com.pragma.emazon_user.domain.api.UserServicePort;
+import com.pragma.emazon_user.domain.model.Permission;
 import com.pragma.emazon_user.domain.model.Role;
 import com.pragma.emazon_user.domain.model.User;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +52,11 @@ class UserHandlerImplTest {
                 LocalDate.of(1990, 1, 1),
                 "javier.perez@example.com",
                 "password123",
-                new Role(1, "aux_bodega", "description")
+                new Role(1,
+                        "aux_bodega",
+                        "description",
+                        Set.of(new Permission(1, "READ"))
+                )
         );
 
         when(userRequestMapper.toDomain(userRequest)).thenReturn(mappedUser);

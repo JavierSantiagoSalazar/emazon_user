@@ -2,7 +2,9 @@ package com.pragma.emazon_user.infrastructure.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.emazon_user.application.dto.UserRequest;
-import com.pragma.emazon_user.application.handler.UserHandler;
+import com.pragma.emazon_user.application.handler.auth.AuthenticationHandler;
+import com.pragma.emazon_user.application.handler.user.UserHandler;
+import com.pragma.emazon_user.infrastructure.configuration.security.filter.JwtValidatorFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -30,7 +33,16 @@ class UserRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private AuthenticationHandler authenticationHandler;
+
+    @MockBean
     private UserHandler userHandler;
+
+    @MockBean
+    private JwtValidatorFilter jwtValidatorFilter;
+
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -55,7 +67,7 @@ class UserRestControllerTest {
 
         doNothing().when(userHandler).createWarehouseAssistant(userRequest);
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isCreated())
@@ -67,7 +79,7 @@ class UserRestControllerTest {
 
         userRequest.setUserName("");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -79,7 +91,7 @@ class UserRestControllerTest {
 
         userRequest.setUserName("A".repeat(151));
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -91,7 +103,7 @@ class UserRestControllerTest {
 
         userRequest.setUserLastName("");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -103,7 +115,7 @@ class UserRestControllerTest {
 
         userRequest.setUserLastName("B".repeat(151));
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -115,7 +127,7 @@ class UserRestControllerTest {
 
         userRequest.setUserDocument("");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -127,7 +139,7 @@ class UserRestControllerTest {
 
         userRequest.setUserDocument("12345678901");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -139,7 +151,7 @@ class UserRestControllerTest {
 
         userRequest.setUserPhone("invalidPhone");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -151,7 +163,7 @@ class UserRestControllerTest {
 
         userRequest.setUserPhone("+12345678901234");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -163,7 +175,7 @@ class UserRestControllerTest {
 
         userRequest.setUserBirthdate("01-01-1990");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -175,7 +187,7 @@ class UserRestControllerTest {
 
         userRequest.setUserEmail("invalidEmail");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -187,7 +199,7 @@ class UserRestControllerTest {
 
         userRequest.setUserPassword(" ");
 
-        mockMvc.perform(post("/user/warehouseAssistant")
+        mockMvc.perform(post("/user/warehouse-assistant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest())
@@ -202,4 +214,3 @@ class UserRestControllerTest {
     }
 
 }
-

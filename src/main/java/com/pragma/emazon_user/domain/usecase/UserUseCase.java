@@ -8,6 +8,7 @@ import com.pragma.emazon_user.domain.exception.user.UserInvalidPhoneFormatExcept
 import com.pragma.emazon_user.domain.exception.user.UserUnderageException;
 import com.pragma.emazon_user.domain.model.Role;
 import com.pragma.emazon_user.domain.model.User;
+import com.pragma.emazon_user.domain.spi.PasswordEncoderPort;
 import com.pragma.emazon_user.domain.spi.RolePersistencePort;
 import com.pragma.emazon_user.domain.spi.UserPersistencePort;
 import com.pragma.emazon_user.domain.utils.Constants;
@@ -23,13 +24,18 @@ public class UserUseCase implements UserServicePort {
 
     private final UserPersistencePort userPersistencePort;
     private final RolePersistencePort rolePersistencePort;
+    private final PasswordEncoderPort passwordEncoderPort;
 
     @Override
     public void saveWarehouseAssistant(User user) {
 
         validateUser(user);
+
         Role role = rolePersistencePort.getRoleById(WAREHOUSE_ASSISTANT_ROLE_ID);
+        String password = user.getUserPassword();
+
         user.setUserRole(role);
+        user.setUserPassword(passwordEncoderPort.encode(password));
 
         userPersistencePort.saveUser(user);
     }

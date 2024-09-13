@@ -1,8 +1,11 @@
 package com.pragma.emazon_user.infrastructure.out.jpa.adapter;
 
+import com.pragma.emazon_user.domain.model.Permission;
 import com.pragma.emazon_user.domain.model.Role;
 import com.pragma.emazon_user.domain.model.User;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.PermissionEntity;
 import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEntity;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import com.pragma.emazon_user.infrastructure.out.jpa.entity.UserEntity;
 import com.pragma.emazon_user.infrastructure.out.jpa.mapper.UserEntityMapper;
 import com.pragma.emazon_user.infrastructure.out.jpa.repository.UserRepository;
@@ -11,13 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,8 +33,6 @@ class UserJpaAdapterTest {
     private UserRepository userRepository;
     @Mock
     private UserEntityMapper userEntityMapper;
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserJpaAdapter userJpaAdapter;
@@ -40,7 +42,11 @@ class UserJpaAdapterTest {
 
     @BeforeEach
     public void setUp() {
-        Role defaultRole = new Role(1, "aux_bodega", "description");
+        Role defaultRole = new Role(1,
+                "aux_bodega",
+                "description",
+                Set.of(new Permission(1, "READ"))
+        );
         defaultUser = new User(
                 1,
                 "John",
@@ -62,7 +68,13 @@ class UserJpaAdapterTest {
                 LocalDate.of(1990, 1, 1),
                 "johndoe@example.com",
                 "encodedPassword",
-                new RoleEntity(1, "aux_bodega", "description", List.of())
+                new RoleEntity(
+                        1,
+                        RoleEnum.WAREHOUSE_ASSISTANT,
+                        "description",
+                        List.of(),
+                        Set.of(new PermissionEntity(1, "READ"))
+                )
         );
     }
 
@@ -70,13 +82,10 @@ class UserJpaAdapterTest {
     @Test
     void givenUser_whenSaveUserIsCalled_thenUserIsSaved() {
 
-        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-
         when(userEntityMapper.toEntity(defaultUser)).thenReturn(defaultUserEntity);
 
         userJpaAdapter.saveUser(defaultUser);
 
-        verify(passwordEncoder, times(1)).encode("password");
         verify(userEntityMapper, times(1)).toEntity(defaultUser);
         verify(userRepository, times(1)).save(defaultUserEntity);
     }
