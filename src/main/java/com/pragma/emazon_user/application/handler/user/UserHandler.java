@@ -7,4 +7,6 @@ public interface UserHandler {
 
     void createWarehouseAssistant(@Valid UserRequest userRequest);
 
+    void createClient(@Valid UserRequest userRequest);
+
 }

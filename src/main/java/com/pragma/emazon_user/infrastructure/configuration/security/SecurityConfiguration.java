@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, Constants.LOGIN_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, Constants.WAREHOUSE_ASSISTANT_URL)
                             .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, Constants.CLIENT_URL).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtValidatorFilter, BasicAuthenticationFilter.class)

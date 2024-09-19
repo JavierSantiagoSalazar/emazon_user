@@ -20,18 +20,16 @@ import java.time.Period;
 @AllArgsConstructor
 public class UserUseCase implements UserServicePort {
 
-    private static final Integer WAREHOUSE_ASSISTANT_ROLE_ID = 1;
-
     private final UserPersistencePort userPersistencePort;
     private final RolePersistencePort rolePersistencePort;
     private final PasswordEncoderPort passwordEncoderPort;
 
     @Override
-    public void saveWarehouseAssistant(User user) {
+    public void saveUser(User user, Integer roleId) {
 
         validateUser(user);
 
-        Role role = rolePersistencePort.getRoleById(WAREHOUSE_ASSISTANT_ROLE_ID);
+        Role role = rolePersistencePort.getRoleById(roleId);
         String password = user.getUserPassword();
 
         user.setUserRole(role);

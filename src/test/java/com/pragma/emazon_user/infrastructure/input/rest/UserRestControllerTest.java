@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.emazon_user.application.dto.UserRequest;
 import com.pragma.emazon_user.application.handler.auth.AuthenticationHandler;
 import com.pragma.emazon_user.application.handler.user.UserHandler;
+import com.pragma.emazon_user.application.utils.Constants;
 import com.pragma.emazon_user.infrastructure.configuration.security.filter.JwtValidatorFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -212,5 +213,143 @@ class UserRestControllerTest {
                         containsString("Password cannot contain white spaces")
                 ));
     }
+
+    @Test
+    void givenValidUserRequest_whenCreateClient_thenReturns201() throws Exception {
+        doNothing().when(userHandler).createClient(userRequest);
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.header().exists("Location"));
+    }
+
+    @Test
+    void givenInvalidUserName_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserName("");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[User name cannot be empty]"));
+    }
+
+    @Test
+    void givenUserNameExceedsMaxLength_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserName("A".repeat(151));
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message")
+                        .value("[User name cannot exceed 150 characters]"));
+    }
+
+    @Test
+    void givenInvalidUserLastName_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserLastName("");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[User last name cannot be empty]"));
+    }
+
+    @Test
+    void givenUserLastNameExceedsMaxLength_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserLastName("B".repeat(151));
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message")
+                .value("[User last name cannot exceed 150 characters]"));
+    }
+
+    @Test
+    void givenInvalidUserDocument_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserDocument("");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[User document cannot be empty]"));
+    }
+
+    @Test
+    void givenUserDocumentExceedsMaxLength_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserDocument("12345678901");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[User document cannot exceed 10 characters]"));
+    }
+
+    @Test
+    void givenInvalidUserPhonePattern_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserPhone("invalidPhone");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message")
+                        .value("[Phone number must contain only numbers and may start with + symbol]"));
+    }
+
+    @Test
+    void givenUserPhoneExceedsMaxLength_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserPhone("+12345678901234");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[Phone number cannot exceed 13 characters]"));
+    }
+
+    @Test
+    void givenInvalidUserBirthdatePattern_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserBirthdate("01-01-1990");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message")
+                        .value("[Birthdate must be in yyyy/mm/dd format]"));
+    }
+
+    @Test
+    void givenInvalidUserEmailPattern_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserEmail("invalidEmail");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[Invalid email]"));
+    }
+
+    @Test
+    void givenInvalidUserPasswordPattern_whenCreateClient_thenReturns400() throws Exception {
+        userRequest.setUserPassword(" ");
+
+        mockMvc.perform(post("/user/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", containsString(Constants.USER_PASSWORD_MUST_NOT_BE_BLANK)))
+                .andExpect(jsonPath("$.message", containsString(Constants.USER_PASSWORD_CANT_CONTAIN_WHITE_SPACES)));
+    }
+
 
 }
