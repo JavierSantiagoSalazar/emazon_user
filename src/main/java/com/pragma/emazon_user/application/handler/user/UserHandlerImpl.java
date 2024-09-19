@@ -13,14 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserHandlerImpl implements UserHandler {
 
+    private static final Integer WAREHOUSE_ASSISTANT_ROLE_ID = 1;
+    private static final Integer CLIENT_ROLE_ID = 3;
+
     private final UserServicePort userServicePort;
     private final UserRequestMapper userRequestMapper;
 
     @Override
     public void createWarehouseAssistant(UserRequest userRequest) {
-
         normalizeUserRequest(userRequest);
-        userServicePort.saveWarehouseAssistant(userRequestMapper.toDomain(userRequest));
+        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), WAREHOUSE_ASSISTANT_ROLE_ID);
+    }
+
+    @Override
+    public void createClient(UserRequest userRequest) {
+        normalizeUserRequest(userRequest);
+        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), CLIENT_ROLE_ID);
     }
 
     private void normalizeUserRequest(UserRequest userRequest) {

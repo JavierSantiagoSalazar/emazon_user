@@ -4,7 +4,7 @@ import com.pragma.emazon_user.domain.model.User;
 
 public interface UserServicePort {
 
-    void saveWarehouseAssistant(User user);
+    void saveUser(User user, Integer roleId);
 
     boolean checkIfUserExists(String userEmail);
 

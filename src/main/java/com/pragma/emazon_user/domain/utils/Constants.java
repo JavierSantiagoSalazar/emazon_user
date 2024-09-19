@@ -20,6 +20,7 @@ public class Constants {
 
     public static final String LOGIN_URL = "/auth/log-in";
     public static final String WAREHOUSE_ASSISTANT_URL = "/user/warehouse-assistant";
+    public static final String CLIENT_URL = "/user/client";
 
     /* --- EXCEPTIONS CONSTANTS: USER --- */
 
@@ -51,11 +52,14 @@ public class Constants {
     public static final String OPEN_API_V3_API_DOCS = "/v3/api-docs/**";
 
     public static final String WAREHOUSE_ASSISTANT_SUMMARY = "Add new warehouse assistant";
+    public static final String CLIENT_SUMMARY = "Add new client";
     public static final String LOGIN_SUMMARY = "Allows a user to authenticate in the system";
 
     public static final String WAREHOUSE_ASSISTANT_CREATED = "Warehouse assistant created";
+    public static final String CLIENT_CREATED = "Client created";
 
     public static final String WAREHOUSE_ASSISTANT_ALREADY_EXISTS = "Warehouse assistant already exists";
+    public static final String CLIENT_ALREADY_EXISTS = "Client already exists";
     public static final String INVALID_REQUEST = "Invalid request";
 
     public static final String USER_NAME_MUST_NOT_BE_BLANK = "User name cannot be blank";
