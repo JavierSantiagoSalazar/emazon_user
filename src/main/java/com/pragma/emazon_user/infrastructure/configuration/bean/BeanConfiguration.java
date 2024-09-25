@@ -38,6 +38,7 @@ public class BeanConfiguration {
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceAdapter userDetailsService;
 
+
     @Bean
     public UserPersistencePort userPersistencePort() {
         return new UserJpaAdapter(userRepository, userEntityMapper);
@@ -68,7 +69,8 @@ public class BeanConfiguration {
         return new AuthenticationAdapter(
                 jwtUtils,
                 passwordEncoder(),
-                userDetailsService
+                userDetailsService,
+                userPersistencePort()
         );
     }
 

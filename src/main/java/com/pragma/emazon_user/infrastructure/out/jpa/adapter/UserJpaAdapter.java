@@ -5,7 +5,11 @@ import com.pragma.emazon_user.domain.spi.UserPersistencePort;
 import com.pragma.emazon_user.infrastructure.out.jpa.mapper.UserEntityMapper;
 import com.pragma.emazon_user.infrastructure.out.jpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
+@Component
 @RequiredArgsConstructor
 public class UserJpaAdapter implements UserPersistencePort {
 
@@ -30,6 +34,11 @@ public class UserJpaAdapter implements UserPersistencePort {
     @Override
     public Boolean checkIfUserExistsByPhone(String userPhone) {
         return userRepository.findByUserPhone(userPhone).isPresent();
+    }
+
+    @Override
+    public Optional<Integer> getUserIdByEmail(String userEmail) {
+        return userRepository.findUserIdByEmail(userEmail);
     }
 
 }

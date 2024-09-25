@@ -28,7 +28,7 @@ public class JwtUtils {
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, Integer userId) {
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
         String username = authentication.getPrincipal().toString();
@@ -40,6 +40,7 @@ public class JwtUtils {
         return JWT.create()
                 .withIssuer(this.userGenerator)
                 .withSubject(username)
+                .withClaim(Constants.CLAIM_USER_ID, userId)
                 .withClaim(Constants.CLAIM_AUTHORITIES, authorities)
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
