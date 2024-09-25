@@ -8,6 +8,7 @@ public class Constants {
 
     public static final String COMMA_DELIMITER = ",";
     public static final String CLAIM_AUTHORITIES = "authorities";
+    public static final String CLAIM_USER_ID = "userId";
     public static final String INVALID_TOKEN = "Token invalid";
     public static final String UNAUTHORIZED_ACCESS = "Unauthorized access: ";
     public static final String SPRING_COMPONENT_MODEL = "spring";
@@ -25,6 +26,7 @@ public class Constants {
     /* --- EXCEPTIONS CONSTANTS: USER --- */
 
     public static final String USER_ALREADY_EXISTS_EXCEPTION_MESSAGE = "User already registered with: ";
+    public static final String USER_NOT_FOUND_WITH_EMAIL_EXCEPTION_MESSAGE = "User not found with email: ";
     public static final String USER_INVALID_EMAIL_FORMAT_EXCEPTION_MESSAGE = "Invalid email format: ";
     public static final String USER_INVALID_PHONE_FORMAT_EXCEPTION_MESSAGE = "Phone number must contain only numbers and may start with the symbol: +. The entered phone number: ";
     public static final String USER_INVALID_DOCUMENT_FORMAT_EXCEPTION_MESSAGE = "Invalid document format: ";

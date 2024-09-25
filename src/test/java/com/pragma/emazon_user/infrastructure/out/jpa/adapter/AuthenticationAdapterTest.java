@@ -3,6 +3,7 @@ package com.pragma.emazon_user.infrastructure.out.jpa.adapter;
 import com.pragma.emazon_user.application.dto.auth.LoginRequest;
 import com.pragma.emazon_user.domain.model.AuthenticationResponse;
 import com.pragma.emazon_user.domain.model.Login;
+import com.pragma.emazon_user.domain.spi.UserPersistencePort;
 import com.pragma.emazon_user.domain.utils.Constants;
 import com.pragma.emazon_user.infrastructure.utils.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,6 +42,9 @@ class AuthenticationAdapterTest {
 
     @Mock
     private UserDetailsServiceAdapter userDetailService;
+
+    @Mock
+    private UserPersistencePort userPersistencePort;
 
     @InjectMocks
     private AuthenticationAdapter authenticationAdapter;
@@ -68,7 +74,8 @@ class AuthenticationAdapterTest {
 
         when(userDetailService.loadUserByUsername(validLoginRequest.getUserEmail())).thenReturn(userDetails);
         when(passwordEncoder.matches(validLoginRequest.getUserPassword(), userDetails.getPassword())).thenReturn(true);
-        when(jwtUtils.createToken(any(Authentication.class))).thenReturn("jwtToken");
+        when(userPersistencePort.getUserIdByEmail(validLoginRequest.getUserEmail())).thenReturn(Optional.of(1));
+        when(jwtUtils.createToken(any(Authentication.class), eq(1))).thenReturn("jwtToken");
 
         AuthenticationResponse response = authenticationAdapter.loginUser(validLogin);
 
@@ -81,8 +88,10 @@ class AuthenticationAdapterTest {
                 .loadUserByUsername(validLoginRequest.getUserEmail());
         verify(passwordEncoder, times(1))
                 .matches(validLoginRequest.getUserPassword(), userDetails.getPassword());
+        verify(userPersistencePort, times(1))
+                .getUserIdByEmail(validLoginRequest.getUserEmail());
         verify(jwtUtils, times(1))
-                .createToken(any(Authentication.class));
+                .createToken(any(Authentication.class), eq(1));
     }
 
     @Test
@@ -97,7 +106,7 @@ class AuthenticationAdapterTest {
                 .loadUserByUsername(invalidLoginRequest.getUserEmail());
         verify(passwordEncoder, times(1))
                 .matches(invalidLoginRequest.getUserPassword(), userDetails.getPassword());
-        verify(jwtUtils, never()).createToken(any(Authentication.class));
+        verify(jwtUtils, never()).createToken(any(Authentication.class), eq(1));
     }
 
     @Test
