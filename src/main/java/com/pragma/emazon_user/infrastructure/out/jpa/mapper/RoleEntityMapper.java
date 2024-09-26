@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = Constants.SPRING_COMPONENT_MODEL)
 public interface RoleEntityMapper {
 
-    Role roDomain(RoleEntity roleEntity);
+    Role toDomain(RoleEntity roleEntity);
 
 }

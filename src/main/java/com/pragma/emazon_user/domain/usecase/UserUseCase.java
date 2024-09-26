@@ -1,6 +1,7 @@
 package com.pragma.emazon_user.domain.usecase;
 
 import com.pragma.emazon_user.domain.api.UserServicePort;
+import com.pragma.emazon_user.domain.exception.role.RoleNotFoundException;
 import com.pragma.emazon_user.domain.exception.user.UserAlreadyExistsException;
 import com.pragma.emazon_user.domain.exception.user.UserInvalidDocumentFormatException;
 import com.pragma.emazon_user.domain.exception.user.UserInvalidEmailFormatException;
@@ -12,6 +13,7 @@ import com.pragma.emazon_user.domain.spi.PasswordEncoderPort;
 import com.pragma.emazon_user.domain.spi.RolePersistencePort;
 import com.pragma.emazon_user.domain.spi.UserPersistencePort;
 import com.pragma.emazon_user.domain.utils.Constants;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
@@ -25,11 +27,11 @@ public class UserUseCase implements UserServicePort {
     private final PasswordEncoderPort passwordEncoderPort;
 
     @Override
-    public void saveUser(User user, Integer roleId) {
+    public void saveUser(User user, RoleEnum roleName) {
 
         validateUser(user);
 
-        Role role = rolePersistencePort.getRoleById(roleId);
+        Role role = rolePersistencePort.getRoleByRoleName(roleName).orElseThrow(RoleNotFoundException::new);
         String password = user.getUserPassword();
 
         user.setUserRole(role);

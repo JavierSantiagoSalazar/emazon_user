@@ -11,6 +11,7 @@ import com.pragma.emazon_user.domain.model.User;
 import com.pragma.emazon_user.domain.spi.PasswordEncoderPort;
 import com.pragma.emazon_user.domain.spi.RolePersistencePort;
 import com.pragma.emazon_user.domain.spi.UserPersistencePort;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,11 +19,12 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -65,17 +67,18 @@ class UserUseCaseTest {
     void givenValidUserRequest_whenSaveWarehouseAssistant_thenWarehouseAssistantIsSaved() {
 
         int warehouseAssistantRoleId = 1;
+        RoleEnum warehouseAssistantRoleEnum = RoleEnum.WAREHOUSE_ASSISTANT;
 
         Role warehouseAssistantRole = new Role(warehouseAssistantRoleId, "aux_bodega", "description", Set.of(new Permission(1, "READ")));
 
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
-        when(rolePersistencePort.getRoleById(warehouseAssistantRoleId)).thenReturn(warehouseAssistantRole);
+        when(rolePersistencePort.getRoleByRoleName(warehouseAssistantRoleEnum)).thenReturn(Optional.of(warehouseAssistantRole));
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword");
 
-        userUseCase.saveUser(defaultUser, warehouseAssistantRoleId);
+        userUseCase.saveUser(defaultUser, warehouseAssistantRoleEnum);
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
-        verify(rolePersistencePort, times(1)).getRoleById(warehouseAssistantRoleId);
+        verify(rolePersistencePort, times(1)).getRoleByRoleName(warehouseAssistantRoleEnum);
         verify(passwordEncoderPort, times(1)).encode("password123");
         verify(userPersistencePort, times(1)).saveUser(defaultUser);
 
@@ -87,17 +90,18 @@ class UserUseCaseTest {
     void givenValidUserRequest_whenSaveClient_thenClientIsSaved() {
 
         int clientRoleId = 3;
+        RoleEnum clientRoleEnum = RoleEnum.CLIENT;
 
         Role clientRole = new Role(clientRoleId, "client", "Client role", Set.of(new Permission(2, "WRITE")));
 
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
-        when(rolePersistencePort.getRoleById(clientRoleId)).thenReturn(clientRole);
+        when(rolePersistencePort.getRoleByRoleName(clientRoleEnum)).thenReturn(Optional.of(clientRole));
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword");
 
-        userUseCase.saveUser(defaultUser, clientRoleId);
+        userUseCase.saveUser(defaultUser, clientRoleEnum);
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
-        verify(rolePersistencePort, times(1)).getRoleById(clientRoleId);
+        verify(rolePersistencePort, times(1)).getRoleByRoleName(clientRoleEnum);
         verify(passwordEncoderPort, times(1)).encode("password123");
         verify(userPersistencePort, times(1)).saveUser(defaultUser);
 
@@ -110,10 +114,10 @@ class UserUseCaseTest {
 
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(true);
 
-        assertThrows(UserAlreadyExistsException.class, () -> userUseCase.saveUser(defaultUser, 1));
+        assertThrows(UserAlreadyExistsException.class, () -> userUseCase.saveUser(defaultUser, RoleEnum.CLIENT));
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
-        verify(rolePersistencePort, never()).getRoleById(anyInt());
+        verify(rolePersistencePort, never()).getRoleByRoleName(any());
         verify(passwordEncoderPort, never()).encode(anyString());
         verify(userPersistencePort, never()).saveUser(defaultUser);
     }
@@ -125,10 +129,10 @@ class UserUseCaseTest {
 
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
 
-        assertThrows(UserInvalidEmailFormatException.class, () -> userUseCase.saveUser(defaultUser, 1));
+        assertThrows(UserInvalidEmailFormatException.class, () -> userUseCase.saveUser(defaultUser, RoleEnum.CLIENT));
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
-        verify(rolePersistencePort, never()).getRoleById(anyInt());
+        verify(rolePersistencePort, never()).getRoleByRoleName(any());
         verify(userPersistencePort, never()).saveUser(defaultUser);
     }
 
@@ -140,11 +144,11 @@ class UserUseCaseTest {
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
         when(userPersistencePort.checkIfUserExistsByPhone(defaultUser.getUserPhone())).thenReturn(false);
 
-        assertThrows(UserInvalidPhoneFormatException.class, () -> userUseCase.saveUser(defaultUser, 1));
+        assertThrows(UserInvalidPhoneFormatException.class, () -> userUseCase.saveUser(defaultUser, RoleEnum.CLIENT));
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
         verify(userPersistencePort, times(1)).checkIfUserExistsByPhone(defaultUser.getUserPhone());
-        verify(rolePersistencePort, never()).getRoleById(anyInt());
+        verify(rolePersistencePort, never()).getRoleByRoleName(any());
         verify(userPersistencePort, never()).saveUser(defaultUser);
     }
 
@@ -156,11 +160,11 @@ class UserUseCaseTest {
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
         when(userPersistencePort.checkIfUserExistsByDocument(defaultUser.getUserDocument())).thenReturn(false);
 
-        assertThrows(UserInvalidDocumentFormatException.class, () -> userUseCase.saveUser(defaultUser, 1));
+        assertThrows(UserInvalidDocumentFormatException.class, () -> userUseCase.saveUser(defaultUser, RoleEnum.CLIENT));
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
         verify(userPersistencePort, times(1)).checkIfUserExistsByDocument(defaultUser.getUserDocument());
-        verify(rolePersistencePort, never()).getRoleById(anyInt());
+        verify(rolePersistencePort, never()).getRoleByRoleName(any());
         verify(userPersistencePort, never()).saveUser(defaultUser);
     }
 
@@ -171,10 +175,10 @@ class UserUseCaseTest {
 
         when(userPersistencePort.checkIfUserExists(defaultUser.getUserEmail())).thenReturn(false);
 
-        assertThrows(UserUnderageException.class, () -> userUseCase.saveUser(defaultUser, 1));
+        assertThrows(UserUnderageException.class, () -> userUseCase.saveUser(defaultUser, RoleEnum.CLIENT));
 
         verify(userPersistencePort, times(1)).checkIfUserExists(defaultUser.getUserEmail());
-        verify(rolePersistencePort, never()).getRoleById(anyInt());
+        verify(rolePersistencePort, never()).getRoleByRoleName(any());
         verify(userPersistencePort, never()).saveUser(defaultUser);
     }
 

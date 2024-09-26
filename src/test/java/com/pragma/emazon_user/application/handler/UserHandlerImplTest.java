@@ -5,6 +5,7 @@ import com.pragma.emazon_user.application.handler.user.UserHandlerImpl;
 import com.pragma.emazon_user.application.mappers.UserRequestMapper;
 import com.pragma.emazon_user.domain.api.UserServicePort;
 import com.pragma.emazon_user.domain.model.User;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -57,7 +58,7 @@ class UserHandlerImplTest {
         userHandlerImpl.createWarehouseAssistant(userRequest);
 
         verify(userRequestMapper, times(1)).toDomain(userRequest);
-        verify(userServicePort, times(1)).saveUser(mappedUser, 1);
+        verify(userServicePort, times(1)).saveUser(mappedUser, RoleEnum.WAREHOUSE_ASSISTANT);
     }
 
     @Test
@@ -89,7 +90,7 @@ class UserHandlerImplTest {
         userHandlerImpl.createClient(userRequest);
 
         verify(userRequestMapper, times(1)).toDomain(userRequest);
-        verify(userServicePort, times(1)).saveUser(mappedUser, 3);
+        verify(userServicePort, times(1)).saveUser(mappedUser, RoleEnum.CLIENT);
     }
 
 }
