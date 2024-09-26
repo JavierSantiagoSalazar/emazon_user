@@ -1,6 +1,5 @@
 package com.pragma.emazon_user.infrastructure.out.jpa.adapter;
 
-import com.pragma.emazon_user.domain.exception.role.RoleDoesNotExistException;
 import com.pragma.emazon_user.domain.model.Permission;
 import com.pragma.emazon_user.domain.model.Role;
 import com.pragma.emazon_user.infrastructure.out.jpa.entity.PermissionEntity;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -19,12 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class RoleJpaAdapterTest {
@@ -55,30 +50,34 @@ class RoleJpaAdapterTest {
                 Set.of(new PermissionEntity(1, "READ"))
         );
     }
-    
+
     @Test
-    void givenRoleIdExists_whenGetRoleByIdIsCalled_thenReturnRole() {
+    void getRoleByRoleName_shouldReturnRoleWhenFound() {
 
-        when(roleRepository.findById(defaultRole.getRoleId())).thenReturn(Optional.of(defaultRoleEntity));
-        when(roleEntityMapper.roDomain(defaultRoleEntity)).thenReturn(defaultRole);
+        RoleEnum roleEnum = RoleEnum.WAREHOUSE_ASSISTANT;
 
-        Role result = roleJpaAdapter.getRoleById(defaultRole.getRoleId());
+        Mockito.when(roleRepository.findByRoleName(roleEnum)).thenReturn(Optional.of(defaultRoleEntity));
+        Mockito.when(roleEntityMapper.toDomain(defaultRoleEntity)).thenReturn(defaultRole);
 
-        verify(roleRepository, times(1)).findById(defaultRole.getRoleId());
-        verify(roleEntityMapper, times(1)).roDomain(defaultRoleEntity);
-        assertEquals(defaultRole, result);
+        Optional<Role> result = roleJpaAdapter.getRoleByRoleName(roleEnum);
+
+        assertTrue(result.isPresent());
+        assertEquals(defaultRole, result.get());
+        Mockito.verify(roleRepository).findByRoleName(roleEnum);
+        Mockito.verify(roleEntityMapper).toDomain(defaultRoleEntity);
     }
 
     @Test
-    void givenRoleIdDoesNotExist_whenGetRoleByIdIsCalled_thenThrowException() {
+    void getRoleByRoleName_shouldReturnEmptyWhenRoleNotFound() {
 
-        when(roleRepository.findById(defaultRole.getRoleId())).thenReturn(Optional.empty());
+        RoleEnum roleEnum = RoleEnum.WAREHOUSE_ASSISTANT;
 
-        Integer roleId = defaultRole.getRoleId();
-        assertThrows(RoleDoesNotExistException.class, () -> roleJpaAdapter.getRoleById(roleId));
+        Mockito.when(roleRepository.findByRoleName(roleEnum)).thenReturn(Optional.empty());
 
-        verify(roleRepository, times(1)).findById(defaultRole.getRoleId());
-        verify(roleEntityMapper, never()).roDomain(any(RoleEntity.class));
+        Optional<Role> result = roleJpaAdapter.getRoleByRoleName(roleEnum);
+
+        assertTrue(result.isEmpty());
+        Mockito.verify(roleRepository).findByRoleName(roleEnum);
+        Mockito.verify(roleEntityMapper, Mockito.never()).toDomain(Mockito.any(RoleEntity.class));
     }
-
 }

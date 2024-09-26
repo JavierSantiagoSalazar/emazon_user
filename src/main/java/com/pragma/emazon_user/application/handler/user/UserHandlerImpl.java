@@ -3,6 +3,7 @@ package com.pragma.emazon_user.application.handler.user;
 import com.pragma.emazon_user.application.dto.UserRequest;
 import com.pragma.emazon_user.application.mappers.UserRequestMapper;
 import com.pragma.emazon_user.domain.api.UserServicePort;
+import com.pragma.emazon_user.infrastructure.out.jpa.entity.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,22 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserHandlerImpl implements UserHandler {
 
-    private static final Integer WAREHOUSE_ASSISTANT_ROLE_ID = 1;
-    private static final Integer CLIENT_ROLE_ID = 3;
-
     private final UserServicePort userServicePort;
     private final UserRequestMapper userRequestMapper;
 
     @Override
     public void createWarehouseAssistant(UserRequest userRequest) {
         normalizeUserRequest(userRequest);
-        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), WAREHOUSE_ASSISTANT_ROLE_ID);
+        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), RoleEnum.WAREHOUSE_ASSISTANT);
     }
 
     @Override
     public void createClient(UserRequest userRequest) {
         normalizeUserRequest(userRequest);
-        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), CLIENT_ROLE_ID);
+        userServicePort.saveUser(userRequestMapper.toDomain(userRequest), RoleEnum.CLIENT);
     }
 
     private void normalizeUserRequest(UserRequest userRequest) {

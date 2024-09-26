@@ -1,6 +1,6 @@
 package com.pragma.emazon_user.infrastructure.configuration.exception.exceptionhandler;
 
-import com.pragma.emazon_user.domain.exception.role.RoleDoesNotExistException;
+import com.pragma.emazon_user.domain.exception.role.RoleNotFoundException;
 import com.pragma.emazon_user.domain.exception.user.UserAlreadyExistsException;
 import com.pragma.emazon_user.domain.exception.user.UserInvalidDocumentFormatException;
 import com.pragma.emazon_user.domain.exception.user.UserInvalidEmailFormatException;
@@ -26,7 +26,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUserAlreadyExistsException(
             UserAlreadyExistsException userAlreadyExistsException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.CONFLICT)
@@ -58,7 +57,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleBadCredentialsException(
             BadCredentialsException badCredentialsException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.UNAUTHORIZED)
@@ -72,7 +70,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUserInvalidEmailFormatException(
             UserInvalidEmailFormatException userInvalidEmailFormatException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.BAD_REQUEST)
@@ -86,7 +83,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUserInvalidPhoneFormatException(
             UserInvalidPhoneFormatException userInvalidPhoneFormatException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.BAD_REQUEST)
@@ -100,7 +96,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUserInvalidDocumentFormatException(
             UserInvalidDocumentFormatException userInvalidDocumentFormatException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.BAD_REQUEST)
@@ -114,7 +109,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUserUnderageException(
             UserUnderageException userUnderageException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.BAD_REQUEST)
@@ -128,7 +122,6 @@ public class ControllerAdvisor {
     public ResponseEntity<Response> handleUsernameNotFoundException(
             UsernameNotFoundException usernameNotFoundException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.NOT_FOUND)
@@ -138,15 +131,14 @@ public class ControllerAdvisor {
         );
     }
 
-    @ExceptionHandler(RoleDoesNotExistException.class)
+    @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<Response> handleRoleDoesNotExistException(
-            RoleDoesNotExistException roleDoesNotExistException
+            RoleNotFoundException roleNotFoundException
     ) {
-
         return new ResponseEntity<>(
                 Response.builder()
                         .statusCode(HttpStatus.NOT_FOUND)
-                        .message(roleDoesNotExistException.getMessage())
+                        .message(roleNotFoundException.getMessage())
                         .build(),
                 HttpStatus.NOT_FOUND
         );
